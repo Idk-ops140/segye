@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Video - Segye</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="sidebar">
+        <h2>세계 (Segye)</h2>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="rules.html">Rules</a></li>
+            <li><a href="login.html" id="loginLink">Login</a></li>
+            <li><a href="signup.html" id="signupLink">Sign Up</a></li>
+        </ul>
+    </div>
+
+    <div id="mainContent">
+        <h1>Create Your Video</h1>
+        <form id="createForm">
+            <input type="text" id="videoTitle" placeholder="Video Title" required>
+            <input type="file" id="videoFile" accept="video/*" required>
+            <input type="file" id="thumbnailFile" accept="image/*" required>
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('createForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('videoTitle').value;
+            const videoFile = document.getElementById('videoFile').files[0];
+            const thumbnailFile = document.getElementById('thumbnailFile').files[0];
+
+            if (videoFile && thumbnailFile) {
+                // Read the video and thumbnail files
+                const videoURL = URL.createObjectURL(videoFile);
+                const thumbnailURL = URL.createObjectURL(thumbnailFile);
+
+                // Get the current user
+                const user = localStorage.getItem('user');
+                if (!user) {
+                    alert("You need to log in first.");
+                    return;
+                }
+
+                // Retrieve videos from localStorage or create an empty array
+                let videos = JSON.parse(localStorage.getItem('videos')) || [];
+
+                // Add the new video to the array
+                const newVideo = {
+                    title,
+                    videoURL,
+                    thumbnailURL,
+                    user
+                };
+
+                videos.push(newVideo);
+
+                // Save the updated videos list to localStorage
+                localStorage.setItem('videos', JSON.stringify(videos));
+
+                // Redirect to the homepage after uploading
+                window.location.href = 'index.html';
+            } else {
+                alert("Please select both a video and a thumbnail.");
+            }
+        });
+    </script>
+</body>
+</html>

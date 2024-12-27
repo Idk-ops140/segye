@@ -3,34 +3,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const user = localStorage.getItem('user');
     const loginLink = document.getElementById('loginLink');
     const signupLink = document.getElementById('signupLink');
-    
+    const createLink = document.getElementById('createLink');
+
     if (user) {
         loginLink.textContent = 'Logout';
         loginLink.onclick = logoutUser;
         signupLink.style.display = 'none'; // Hide sign-up link when logged in
+        createLink.style.display = 'block'; // Show create link
     } else {
         loginLink.onclick = () => window.location.href = 'login.html';
         signupLink.onclick = () => window.location.href = 'signup.html';
+        createLink.style.display = 'none'; // Hide create link when not logged in
     }
 
-    // Load videos (just a mock example)
+    // Load videos (check if there are saved videos)
     loadVideos();
 });
 
 function loadVideos() {
     const videoList = document.getElementById('videoList');
-    const videos = [
-        { title: 'Video 1', thumbnail: 'https://via.placeholder.com/150' },
-        { title: 'Video 2', thumbnail: 'https://via.placeholder.com/150' },
-        { title: 'Video 3', thumbnail: 'https://via.placeholder.com/150' },
-    ];
+    const videos = JSON.parse(localStorage.getItem('videos')) || [];
 
     videoList.innerHTML = '';
     videos.forEach(video => {
         const videoElement = document.createElement('div');
         videoElement.classList.add('videoThumbnail');
-        videoElement.innerHTML = `<img src="${video.thumbnail}" alt="${video.title}"><h4>${video.title}</h4>`;
-        videoElement.onclick = () => playVideo(video.title);
+        videoElement.innerHTML = `
+            <img src="${video.thumbnailURL}" alt="${video.title}">
+            <h4>${video.title}</h4>
+        `;
+        videoElement.onclick = () => playVideo(video.videoURL);
         videoList.appendChild(videoElement);
     });
 }
@@ -49,8 +51,8 @@ function searchVideos() {
     });
 }
 
-function playVideo(title) {
-    alert(`Playing: ${title}`);
+function playVideo(videoURL) {
+    window.location.href = videoURL; // Redirect to video URL for playback
 }
 
 function logoutUser() {
